@@ -115,12 +115,14 @@ async function getPetrolStations() {
     gasolineras.forEach(gasolinera => {
         let price = gasolinera["Precio Gasolina 95 E5"];
         let direction = gasolinera["Dirección"];
+        let priceDiesel = gasolinera["Precio Gasoleo A"];
         if (price == "") {
             return;
         }
 
         let priceParsed = parseFloat(price.replace(/,/g, "."));
-        let obj = { "price": priceParsed, "direction": direction };
+        let priceDieselParsed = parseFloat(priceDiesel.replace(/,/g, "."));
+        let obj = { "price": priceParsed, "direction": direction, "priceDiesel": priceDiesel };
         gasofas.push(obj);
     });
 
@@ -130,6 +132,7 @@ async function getPetrolStations() {
         let li = document.createElement("li");
         let h2 = document.createElement("h2");
         let newPrice = gasolinera.price;
+        let newPriceDiesel = gasolinera.priceDiesel;
 
         switch (true) {
             case (newPrice < 1.50):
@@ -142,11 +145,23 @@ async function getPetrolStations() {
                 li.classList.add("rojo");
                 break;
         }
-        if (gasolinera.direction == "" || gasolinera.price == "") {
+
+        switch (true) {
+            case (newPriceDiesel < 1.50):
+                li.classList.add("verde");
+                break;
+            case (newPriceDiesel >= 1.50 && newPriceDiesel < 1.60):
+                li.classList.add("naranja");
+                break;
+            case (newPriceDiesel >= 1.60):
+                li.classList.add("rojo");
+                break;
+        }
+        if (gasolinera.direction == "" || gasolinera.price == "" && gasolinera.priceDiesel == "") {
             h2.innerText = "No hay datos disponibles";
             container.appendChild(h2);
         } else {
-            li.innerText = ` ${gasolinera.direction}: ${gasolinera.price}€/l `;
+            li.innerText = ` ${gasolinera.direction}: Gasolina: ${gasolinera.price}€/l ; Diesel: ${gasolinera.priceDiesel}€/l`;
             container.appendChild(li);
         }
         
