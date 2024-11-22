@@ -122,47 +122,49 @@ async function getPetrolStations() {
 
         let priceParsed = parseFloat(price.replace(/,/g, "."));
         let priceDieselParsed = parseFloat(priceDiesel.replace(/,/g, "."));
-        let obj = { "price": priceParsed, "direction": direction, "priceDiesel": priceDiesel };
+        let obj = { "price": priceParsed, "direction": direction, "priceDiesel": priceDieselParsed };
         gasofas.push(obj);
     });
 
     gasofas.sort((a, b) => a.price - b.price);
 
     gasofas.forEach(gasolinera => {
-        let li = document.createElement("li");
+        let div = document.createElement("div");
         let h2 = document.createElement("h2");
         let newPrice = gasolinera.price;
         let newPriceDiesel = gasolinera.priceDiesel;
 
+        div.classList.add("flex", "flex-col", "items-center", "p-2", "text-gray-50", "bg-gray-800", "m-2", "w-50", "h-50", "rounded-lg");
+
         switch (true) {
             case (newPrice < 1.50):
-                li.classList.add("text-green-300");
+                div.classList.add("bg-green-400");
                 break;
             case (newPrice >= 1.50 && newPrice < 1.60):
-                li.classList.add("naranja");
+                div.classList.add("bg-orange-400");
                 break;
             case (newPrice >= 1.60):
-                li.classList.add("rojo");
+                div.classList.add("bg-red-500");
                 break;
         }
 
-        switch (true) {
-            case (newPriceDiesel < 1.50):
-                li.classList.add("verde");
-                break;
-            case (newPriceDiesel >= 1.50 && newPriceDiesel < 1.60):
-                li.classList.add("naranja");
-                break;
-            case (newPriceDiesel >= 1.60):
-                li.classList.add("rojo");
-                break;
-        }
+        // switch (true) {
+        //     case (newPriceDiesel < 1.50):
+        //         li.classList.add("text-green-300");
+        //         break;
+        //     case (newPriceDiesel >= 1.50 && newPriceDiesel < 1.60):
+        //         li.classList.add("text-orange-300");
+        //         break;
+        //     case (newPriceDiesel >= 1.60):
+        //         li.classList.add("text-red-400");
+        //         break;
+        // }
         if (gasolinera.direction == "" || gasolinera.price == "" && gasolinera.priceDiesel == "") {
             h2.innerText = "No hay datos disponibles";
             container.appendChild(h2);
         } else {
-            li.innerText = ` ${gasolinera.direction}: Gasolina: ${gasolinera.price}€/l ; Diesel: ${gasolinera.priceDiesel}€/l`;
-            container.appendChild(li);
+            div.innerHTML = ` <h1>${gasolinera.direction}: Gasolina: ${gasolinera.price}€/l ; Diesel: ${gasolinera.priceDiesel}€/l</h1>`;
+            container.appendChild(div);
         }
         
 
